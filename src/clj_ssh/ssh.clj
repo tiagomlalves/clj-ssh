@@ -337,7 +337,7 @@ keys.  All other option key pairs will be passed as SSH config options."
    password
    (session-options options)))
 
-(defn ^String session-hostname
+(defn session-hostname ^String
   "Return the hostname for a session"
   [^Session session]
   (.getHost session))
@@ -731,22 +731,6 @@ sh returns a map of
     (connect-channel channel)
     channel))
 
-(defmacro memfn-varargs [name klass]
-  `(fn [^{:tag ~klass} target# args#]
-    (condp = (count args#)
-      0 (. target# (~name))
-      1 (. target# (~name (first args#)))
-      2 (. target# (~name (first args#) (second args#)))
-      3 (. target# (~name (first args#) (second args#) (nth args# 2)))
-      4 (. target#
-           (~name (first args#) (second args#) (nth args# 2) (nth args# 3)))
-      5 (. target#
-           (~name (first args#) (second args#) (nth args# 2) (nth args# 3)
-                  (nth args# 4)))
-      (throw
-       (java.lang.IllegalArgumentException.
-        (str "Too many arguments passed.  Limit 5, passed " (count args#)))))))
-
 (def sftp-modemap { :overwrite ChannelSftp/OVERWRITE
                     :resume ChannelSftp/RESUME
                     :append ChannelSftp/APPEND })
@@ -775,20 +759,17 @@ sh returns a map of
     :get-home (.getHome channel)
     :get-server-version (.getServerVersion channel)
     :get-extension (.getExtension channel (first args))
-    :get (let [args (if (options :with-monitor)
-                      (conj args (options :with-monitor))
-                      args)
-               args (if (options :mode)
-                      (conj args (sftp-modemap (options :mode)))
-                      args)]
-           ((memfn-varargs "get" ChannelSftp) channel args))
-    :put (let [args (if (options :with-monitor)
-                      (conj args (options :with-monitor))
-                      args)
-               args (if (options :mode)
-                      (conj args (sftp-modemap (options :mode)))
-                      args)]
-           ((memfn-varargs "put" ChannelSftp) channel args))
+    :get (let [monitor (if (options :with-monitor)
+                         (options :with-monitor)
+                         nil)]
+           (.get channel (first args) monitor 0L))
+    :put (let [monitor (if (options :with-monitor)
+                         (options :with-monitor)
+                         nil)
+               mode (if (options :mode)
+                      (sftp-modemap (options :mode))
+                      ChannelSftp/OVERWRITE)]
+           (.put channel (first args) monitor mode))
     (throw
      (java.lang.IllegalArgumentException. (str "Unknown SFTP command " cmd)))))
 
