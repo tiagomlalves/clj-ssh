@@ -45,7 +45,12 @@ jobs:
 
       - run:
           name: Setup environment
-          command: sudo apt-get update && sudo apt-get install -y openjdk-8-jdk leiningen
+          command: |
+            sudo apt-get update && sudo apt-get install -y openjdk-8-jdk leiningen
+            curl -sLO https://raw.githubusercontent.com/clj-kondo/clj-kondo/master/script/install-clj-kondo
+            chmod +x install-clj-kondo
+            sudo ./install-clj-kondo --dir /usr/local/bin
+            rm install-clj-kondo
 
       - run:
           name: Fetch project dependencies
@@ -55,6 +60,10 @@ jobs:
           paths:
             - ~/.m2
           key: v1-dependencies-{{ checksum "project.clj" }}
+
+      - run:
+          name: Run static analysis
+          command: clj-kondo --lint src --fail-level error
 
       - run:
           name: Setup tests
