@@ -32,7 +32,9 @@ the system's ssh-agent, or to clj-ssh's ssh-agent with the appropriate
 `add-identity` call."
   (:require
    [clj-ssh.ssh :as ssh]
-   [clojure.string :as string]))
+   [clojure.string :as string])
+  (:import
+   [com.jcraft.jsch Identity]))
 
 ;;; Agent
 (def ^{:doc "SSH agent used to manage identities." :dynamic true}

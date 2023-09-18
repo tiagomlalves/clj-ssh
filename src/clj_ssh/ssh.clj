@@ -781,14 +781,14 @@ sh returns a map of
                args (if (options :mode)
                       (conj args (sftp-modemap (options :mode)))
                       args)]
-           ((memfn-varargs get ChannelSftp) channel args))
+           ((memfn-varargs .get ChannelSftp) channel args))
     :put (let [args (if (options :with-monitor)
                       (conj args (options :with-monitor))
                       args)
                args (if (options :mode)
                       (conj args (sftp-modemap (options :mode)))
                       args)]
-           ((memfn-varargs put ChannelSftp) channel args))
+           ((memfn-varargs .put ChannelSftp) channel args))
     (throw
      (java.lang.IllegalArgumentException. (str "Unknown SFTP command " cmd)))))
 
