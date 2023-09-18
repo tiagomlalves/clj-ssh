@@ -337,7 +337,7 @@ keys.  All other option key pairs will be passed as SSH config options."
    password
    (session-options options)))
 
-(defn session-hostname ^String
+(defn ^String session-hostname
   "Return the hostname for a session"
   [^Session session]
   (.getHost session))
