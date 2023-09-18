@@ -762,7 +762,7 @@ sh returns a map of
     :get (let [monitor (if (options :with-monitor)
                          (options :with-monitor)
                          nil)]
-           (.get channel (first args) monitor 0L))
+           (.get channel (first args) monitor 0))
     :put (let [monitor (if (options :with-monitor)
                          (options :with-monitor)
                          nil)
