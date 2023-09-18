@@ -769,7 +769,7 @@ sh returns a map of
                mode (if (options :mode)
                       (sftp-modemap (options :mode))
                       ChannelSftp/OVERWRITE)]
-           (.put channel (first args) monitor mode))
+           (.put channel (first args) (second args) monitor mode))
     (throw
      (java.lang.IllegalArgumentException. (str "Unknown SFTP command " cmd)))))
 
